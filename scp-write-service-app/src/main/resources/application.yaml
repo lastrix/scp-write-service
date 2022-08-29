@@ -1,0 +1,34 @@
+########## Framework related configuration goes here ################
+db:
+  schema: 'scp_write_service'
+
+spring:
+  profiles:
+    active: 'prod'
+  application:
+    name: 'scp-write-service'
+  liquibase:
+    enabled: 'true'
+    change-log: 'classpath:liquibase/changelog/changelog.xml'
+    liquibase-schema: '${db.schema}'
+    default-schema: '${db.schema}'
+  datasource:
+    driver-class-name: 'org.postgresql.Driver'
+    url: "${SCP_WRITE_SERVICE_DB_URL}"
+    username: "${SCP_WRITE_SERVICE_DB_USERNAME}"
+    password: "${SCP_WRITE_SERVICE_DB_PASSWORD}"
+  sql:
+    init:
+      mode: 'always'
+
+server:
+  servlet:
+    encoding:
+      charset: 'UTF-8'
+      force-response: 'true'
+
+########## Application related configuration goes here ##############
+
+
+
+

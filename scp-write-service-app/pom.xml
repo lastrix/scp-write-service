@@ -6,11 +6,9 @@
 		<groupId>com.lastrix.scp</groupId>
 		<artifactId>scp-write-service-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>scp-write-service-app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>scp-write-service</name>
+	<name>scp-write-service-app</name>
 	<description>Selection Committee Platform Write Service application project</description>
 	<properties>
 		<java.version>17</java.version>
@@ -34,6 +32,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>4.15.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lastrix.scp</groupId>
+			<artifactId>scp-write-service-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

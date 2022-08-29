@@ -6,7 +6,6 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.lastrix.scp</groupId>
 	<artifactId>scp-write-service-parent</artifactId>
@@ -19,8 +18,8 @@
 	</properties>
 
 	<modules>
-		<module>scp-write-service-app</module>
 		<module>scp-write-service-model</module>
+		<module>scp-write-service-app</module>
 	</modules>
 
 	<dependencies>
