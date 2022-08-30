@@ -12,7 +12,8 @@ BEGIN
             USING HINT = 'status = 0';
     END IF;
     UPDATE scp_write_service.enrollee e
-    SET selection_count = selection_count - 1
+    SET selection_count = selection_count - 1,
+        modified_stamp  = current_timestamp
     WHERE e.user_id = NEW.user_id
       AND e.session_id = NEW.session_id;
     -- we do not modify data here
@@ -35,7 +36,7 @@ DECLARE
 BEGIN
     IF OLD.status > NEW.status THEN
         RAISE EXCEPTION 'Invalid status: %', NEW.status
-            USING HINT = 'status should be greater than previous value';
+            USING HINT = 'status should be greater than previous value: ' || OLD.status;
     ELSEIF OLD.status <> NEW.status THEN
         IF NEW.status = 1 THEN
             NEW.confirmed_stamp = current_timestamp;
@@ -49,6 +50,7 @@ BEGIN
             IF previous IS NOT NULL THEN
                 UPDATE scp_write_service.enrollee_select e
                 SET canceled_stamp = current_timestamp,
+                    modified_stamp = current_timestamp,
                     status         = 2,
                     ordinal        = ordinal + 1,
                     state          = 0
@@ -57,13 +59,15 @@ BEGIN
                   AND e.spec_id = previous;
             END IF;
             UPDATE scp_write_service.enrollee e
-            SET selected_spec_id = NEW.spec_id
+            SET selected_spec_id = NEW.spec_id,
+                modified_stamp   = current_timestamp
             WHERE e.user_id = NEW.user_id
               AND e.session_id = NEW.session_id;
         ELSEIF NEW.status = 2 THEN
             NEW.canceled_stamp = current_timestamp;
             UPDATE scp_write_service.enrollee e
-            SET selected_spec_id = NULL
+            SET selected_spec_id = NULL,
+                modified_stamp   = current_timestamp
             WHERE e.user_id = NEW.user_id
               AND e.session_id = NEW.session_id
               AND e.selected_spec_id = NEW.spec_id;
@@ -73,6 +77,14 @@ BEGIN
                 USING HINT = 'status must be 1 or 2';
         END IF;
     END IF;
+    IF OLD.status <> NEW.status OR OLD.score <> NEW.score THEN
+        NEW.ordinal = NEW.ordinal + 1;
+        NEW.state = 0;
+        NEW.modified_stamp = current_timestamp;
+    END IF;
+    -- otherwise changes performed by DB directly
+    -- and we should not affect those changes
+    -- (timeout for confirmation reached and state dropped to 0)
     RETURN NEW;
 END;
 $select_update$ LANGUAGE plpgsql;
@@ -81,5 +93,4 @@ CREATE TRIGGER select_update_trg
     BEFORE UPDATE
     ON scp_write_service.enrollee_select
     FOR EACH ROW
-    WHEN ( NEW.status = 1 OR NEW.status = 2 )
 EXECUTE FUNCTION scp_write_service.select_update();
