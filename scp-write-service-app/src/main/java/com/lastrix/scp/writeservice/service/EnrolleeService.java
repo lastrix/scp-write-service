@@ -1,5 +1,7 @@
 package com.lastrix.scp.writeservice.service;
 
+import com.lastrix.scp.writeservice.model.EnrolleeInfo;
+
 import java.util.UUID;
 
 public interface EnrolleeService {
@@ -32,4 +34,6 @@ public interface EnrolleeService {
      * @return boolean
      */
     boolean cancel(UUID userId, UUID specId, Integer sessionId);
+
+    EnrolleeInfo getInfo(UUID userId, Integer sessionId);
 }

@@ -1,14 +1,17 @@
 package com.lastrix.scp.writeservice.web.v1;
 
 
-import com.lastrix.scp.core.rest.Rest;
-import com.lastrix.scp.core.rest.jwt.Jwt;
+import com.lastrix.scp.lib.rest.Rest;
+import com.lastrix.scp.lib.rest.jwt.Jwt;
+import com.lastrix.scp.writeservice.model.EnrolleeInfo;
 import com.lastrix.scp.writeservice.service.EnrolleeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/enrollee")
 public class EnrolleeController {
@@ -16,6 +19,11 @@ public class EnrolleeController {
     private Jwt jwt;
     @Autowired
     private EnrolleeService srv;
+
+    @GetMapping
+    public Rest<EnrolleeInfo> info() {
+        return Rest.of(srv.getInfo(jwt.getUserId(), null));
+    }
 
     @PostMapping("/{spec}")
     public Rest<Boolean> enroll(@PathVariable UUID spec) {
