@@ -2,6 +2,12 @@
 db:
   schema: 'scp_write_service'
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus,health,info,metric'
+
 spring:
   profiles:
     active: 'prod'
@@ -14,9 +20,9 @@ spring:
     default-schema: '${db.schema}'
   datasource:
     driver-class-name: 'org.postgresql.Driver'
-    url: "${SCP_WRITE_SERVICE_DB_URL}"
-    username: "${SCP_WRITE_SERVICE_DB_USERNAME}"
-    password: "${SCP_WRITE_SERVICE_DB_PASSWORD}"
+    url: "${SCP_WRS_DB_URL}"
+    username: "${SCP_WRS_DB_USERNAME}"
+    password: "${SCP_WRS_DB_PASSWORD}"
   sql:
     init:
       mode: 'always'
@@ -28,7 +34,8 @@ server:
       force-response: 'true'
 
 ########## Application related configuration goes here ##############
-
+scp:
+  debug: 'false'
 
 
 
