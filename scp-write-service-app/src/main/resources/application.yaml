@@ -35,7 +35,7 @@ server:
 
 ########## Application related configuration goes here ##############
 scp:
-  debug: 'false'
+  debug: "${SCP_WRS_DEBUG:false}"
 
 
 
