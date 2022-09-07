@@ -8,7 +8,7 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnrolleSelectInfo {
     private UUID specId;
-    private int status;
+    private short status;
     private int score;
     private Instant createdStamp;
     private Instant confirmedStamp;
@@ -23,11 +23,11 @@ public class EnrolleSelectInfo {
         this.specId = specId;
     }
 
-    public int getStatus() {
+    public short getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(short status) {
         this.status = status;
     }
 

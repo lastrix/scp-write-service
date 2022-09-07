@@ -73,7 +73,7 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
                 (rs, rowNum) -> {
                     var r = new EnrolleSelectInfo();
                     r.setSpecId(UUID.fromString(rs.getString(1)));
-                    r.setStatus(rs.getInt(2));
+                    r.setStatus(rs.getShort(2));
                     r.setScore(rs.getInt(3));
                     r.setCreatedStamp(toInstantOrNull(rs, 4));
                     r.setConfirmedStamp(toInstantOrNull(rs, 5));
