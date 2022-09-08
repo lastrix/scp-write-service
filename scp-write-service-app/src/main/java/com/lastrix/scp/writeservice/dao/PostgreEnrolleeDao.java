@@ -26,14 +26,9 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
 
     @Override
     public boolean enroll(UUID userId, UUID specId, int sessionId) {
-        try {
-            return 1 == jdbcTemplate.update(
-                    "INSERT INTO scp_write_service.enrollee_select(user_id, session_id, spec_id) VALUES (?, ?, ?)",
-                    userId, sessionId, specId);
-        } catch (Exception e) {
-            log.error("Failed to enroll", e);
-            return false;
-        }
+        return 1 == jdbcTemplate.update(
+                "INSERT INTO scp_write_service.enrollee_select(user_id, session_id, spec_id) VALUES (?, ?, ?) ON CONFLICT DO NOTHING",
+                userId, sessionId, specId);
     }
 
     @Override
