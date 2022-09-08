@@ -2,6 +2,7 @@ package com.lastrix.scp.writeservice.web.v1;
 
 
 import com.lastrix.scp.lib.rest.Rest;
+import com.lastrix.scp.lib.rest.authz.RequireRoles;
 import com.lastrix.scp.lib.rest.jwt.Jwt;
 import com.lastrix.scp.writeservice.model.EnrolleeInfo;
 import com.lastrix.scp.writeservice.service.EnrolleeService;
@@ -21,24 +22,28 @@ public class EnrolleeController {
     @Autowired
     private EnrolleeService srv;
 
+    @RequireRoles("USER")
     @Timed(value = "enrollee_info")
     @GetMapping
     public Rest<EnrolleeInfo> info() {
         return Rest.of(srv.getInfo(jwt.getUserId(), null));
     }
 
+    @RequireRoles("USER")
     @Timed(value = "enrollee_enroll")
     @PostMapping("/{spec}")
     public Rest<Boolean> enroll(@PathVariable UUID spec) {
         return Rest.of(srv.enroll(jwt.getUserId(), spec, null));
     }
 
+    @RequireRoles("USER")
     @Timed(value = "enrollee_confirm")
     @PutMapping("/{spec}")
     public Rest<Boolean> confirm(@PathVariable UUID spec) {
         return Rest.of(srv.confirm(jwt.getUserId(), spec, null));
     }
 
+    @RequireRoles("USER")
     @Timed(value = "enrollee_cancel")
     @DeleteMapping("/{spec}")
     public Rest<Boolean> cancel(@PathVariable UUID spec) {

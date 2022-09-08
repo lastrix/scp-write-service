@@ -20,14 +20,17 @@ spring:
     default-schema: '${db.schema}'
   datasource:
     driver-class-name: 'org.postgresql.Driver'
-    url: "${SCP_WRS_DB_URL}"
-    username: "${SCP_WRS_DB_USERNAME}"
-    password: "${SCP_WRS_DB_PASSWORD}"
+    url: "${SCP_WS_DB_URL}"
+    username: "${SCP_WS_DB_USERNAME}"
+    password: "${SCP_WS_DB_PASSWORD}"
+    hikari:
+      connection-timeout: 10000
   sql:
     init:
       mode: 'always'
 
 server:
+  port: "${SCP_WS_HTTP_PORT:8080}"
   servlet:
     encoding:
       charset: 'UTF-8'
@@ -35,7 +38,7 @@ server:
 
 ########## Application related configuration goes here ##############
 scp:
-  debug: "${SCP_WRS_DEBUG:false}"
+  debug: "${SCP_WS_DEBUG:false}"
 
 
 
