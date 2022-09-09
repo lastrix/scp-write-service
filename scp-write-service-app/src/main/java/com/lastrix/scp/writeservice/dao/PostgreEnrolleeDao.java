@@ -26,6 +26,7 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
 
     @Override
     public boolean enroll(UUID userId, UUID specId, int sessionId) {
+        // we should prevent conflicts here and return false if nothing inserted
         return 1 == jdbcTemplate.update(
                 "INSERT INTO scp_write_service.enrollee_select(user_id, session_id, spec_id) VALUES (?, ?, ?) ON CONFLICT DO NOTHING",
                 userId, sessionId, specId);
@@ -47,8 +48,18 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
 
     @Override
     public EnrolleeInfo getInfo(UUID userId, int sessionId) {
-        var info = jdbcTemplate.queryForObject("SELECT user_id, session_id, disabled, selected_spec_id, selection_count, created_stamp, modified_stamp FROM scp_write_service.enrollee es WHERE es.user_id = ? AND es.session_id = ?",
-                new Object[]{userId, sessionId},
+        var info = jdbcTemplate.queryForObject(
+                """
+                        SELECT  user_id,
+                                session_id,
+                                disabled,
+                                selected_spec_id,
+                                selection_count,
+                                created_stamp,
+                                modified_stamp
+                        FROM scp_write_service.enrollee es
+                        WHERE   es.user_id = ?
+                            AND es.session_id = ?""",
                 (rs, rowNum) -> {
                     var r = new EnrolleeInfo();
                     r.setUserId(UUID.fromString(rs.getString(1)));
@@ -59,12 +70,26 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
                     r.setCreatedStamp(toInstantOrNull(rs, 6));
                     r.setModifiedStamp(toInstantOrNull(rs, 7));
                     return r;
-                });
+                },
+                userId,
+                sessionId
+        );
         if (info == null) {
             throw ServiceErrorException.notFound("Enrollee", userId + "-" + sessionId);
         }
-        var list = jdbcTemplate.query("SELECT spec_id, status, score, created_stamp, confirmed_stamp, canceled_stamp, state FROM scp_write_service.enrollee_select es WHERE es.user_id = ? AND es.session_id = ? ORDER BY es.spec_id",
-                new Object[]{userId, sessionId},
+        var list = jdbcTemplate.query(
+                """
+                        SELECT  spec_id,
+                                status,
+                                score,
+                                created_stamp,
+                                confirmed_stamp,
+                                canceled_stamp,
+                                state
+                        FROM scp_write_service.enrollee_select es
+                        WHERE   es.user_id = ?
+                            AND es.session_id = ?
+                        ORDER BY es.spec_id""",
                 (rs, rowNum) -> {
                     var r = new EnrolleSelectInfo();
                     r.setSpecId(UUID.fromString(rs.getString(1)));
@@ -75,7 +100,10 @@ public class PostgreEnrolleeDao implements EnrolleeDao {
                     r.setCancelledStamp(toInstantOrNull(rs, 6));
                     r.setState(rs.getInt(7));
                     return r;
-                });
+                },
+                userId,
+                sessionId
+        );
         info.setSelects(list);
         return info;
     }

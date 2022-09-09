@@ -1,20 +1,30 @@
 package com.lastrix.scp.writeservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+@Schema(description = "Describes enrollee and his selected specialities")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnrolleeInfo {
+    @Schema(description = "Enrollee's user id")
     private UUID userId;
+    @Schema(description = "Selection campaign id")
     private int sessionId;
+    @Schema(description = "Starts from 20, with each application reduced by 1, must be ge than zero")
     private int selectionCount;
+    @Schema(description = "Only single speciality may be confirmed, here its id stored")
     private UUID selectedSpecId;
+    @Schema(description = "True if this enrollee may no longer do anything")
     private boolean disabled;
+    @Schema(description = "Date of enrollee registration whithin system")
     private Instant createdStamp;
+    @Schema(description = "Last modification stamp")
     private Instant modifiedStamp;
+    @Schema(description = "List of enrollee's selected specialities")
     private List<EnrolleSelectInfo> selects;
 
     public UUID getUserId() {

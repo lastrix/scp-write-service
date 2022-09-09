@@ -1,18 +1,27 @@
 package com.lastrix.scp.writeservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Schema(description = "Enrollee's selected speciality")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnrolleSelectInfo {
+    @Schema(description = "Speciality id")
     private UUID specId;
+    @Schema(description = "Current selection status, 0 for applied, 1 for confirmed and 2 for cancelled")
     private short status;
+    @Schema(description = "Assigned enrollee's score, the greater the better")
     private int score;
+    @Schema(description = "Date of enrollee's application to this speciality")
     private Instant createdStamp;
+    @Schema(description = "Date of enrollee's confirmation")
     private Instant confirmedStamp;
+    @Schema(description = "Date of enrollee's cancelling")
     private Instant cancelledStamp;
+    @Schema(description = "State of sync, 0 if not sent, 1 for sent but not confirmed, 2 for sent and confirmed")
     private int state;
 
     public UUID getSpecId() {
